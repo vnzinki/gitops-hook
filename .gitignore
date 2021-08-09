@@ -1,0 +1,5 @@
+.vscode
+.env
+workspace
+**__pycache__**
+id_rsa
