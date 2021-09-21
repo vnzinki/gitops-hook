@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from logzero import logger
 
-from const import GITOPS_KEYPATH, GITOPS_REPO, GITOPS_USERMAIL, GITOPS_USERNAME, SECRET, WORKING_DIR
+from const import GITOPS_KEYPATH, GITOPS_REPO, GITOPS_BRANCH, GITOPS_USERMAIL, GITOPS_USERNAME, SECRET, WORKING_DIR
 
 app = FastAPI()
 
@@ -33,19 +33,12 @@ async def helm(request: Request):
         raise HTTPException(status_code=503)
 
     try:
-        gitops_env = request.env
-        gitops_app = request.app
         gitops_image_tag = request.image_tag
-
-        hook_config = json.load(open('config.json'))
-        app_config = hook_config.get(gitops_env).get(gitops_app)
-
-        gitops_path = app_config.get('path')
-        gitops_branch = app_config.get('branch')
-        gitops_image_key = app_config.get('image_key')
+        gitops_path = request.path
+        gitops_image_key = request.key
 
         config_file_path = WORKING_DIR + gitops_path
-        commit_message = f'CI: {gitops_env}.{gitops_app} => {gitops_image_tag}'
+        commit_message = f'CI: gitops_path => {gitops_image_tag}'
     except:
         raise HTTPException(status_code=400, detail='Config not found')
 
