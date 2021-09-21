@@ -38,7 +38,7 @@ async def helm(request: Request):
         gitops_image_key = request.key
 
         config_file_path = WORKING_DIR + gitops_path
-        commit_message = f'CI: gitops_path => {gitops_image_tag}'
+        commit_message = f'CI: {gitops_path} => {gitops_image_tag}'
     except:
         raise HTTPException(status_code=400, detail='Config not found')
 
