@@ -70,7 +70,7 @@ def git_clone(repo: str, branch: str, dir: str):
 def yaml_replace(path: str, key: str, image_tag: str):
     try:
         subprocess.check_call(
-            f'sed -i "s/{key}:.*/{key}: {image_tag}/g" {path}', shell=True)
+            f'sed -i "s/{key}:.*/{key}: \\\"{image_tag}\\\"/g" {path}', shell=True)
     except Exception as ex:
         logger.exception(ex)
         raise HTTPException(status_code=500)
