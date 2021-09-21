@@ -13,8 +13,8 @@ app = FastAPI()
 
 
 class Request(BaseModel):
-    app: Optional[str]
-    env: Optional[str]
+    path: Optional[str]
+    key: Optional[str]
     image_tag: Optional[str]
     secret: Optional[str]
 
@@ -43,7 +43,7 @@ async def helm(request: Request):
         raise HTTPException(status_code=400, detail='Config not found')
 
     delete_workspace(dir=WORKING_DIR)
-    git_clone(repo=GITOPS_REPO, branch=gitops_branch, dir=WORKING_DIR)
+    git_clone(repo=GITOPS_REPO, branch=GITOPS_BRANCH, dir=WORKING_DIR)
     yaml_replace(path=config_file_path, key=gitops_image_key,
                  image_tag=gitops_image_tag)
     git_commit_n_push(path=WORKING_DIR, message=commit_message)
