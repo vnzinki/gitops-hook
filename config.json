@@ -1,9 +1,0 @@
-{
-  "prod": {
-    "p3x": {
-      "branch": "test",
-      "path": "/helm_apps/p3x/values.yaml",
-      "image_key": "commitTag"
-    }
-  }
-}
