@@ -1,12 +1,9 @@
 FROM python:3.9
 
-COPY ./Pipfile /app/Pipfile
-COPY ./Pipfile.lock /app/Pipfile.lock
+COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 
-RUN pip install pipenv &&\
-    pipenv lock -r > requirements.txt &&\
-    pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . /app
 
