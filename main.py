@@ -26,8 +26,8 @@ class Request(BaseModel):
     secret: Optional[str]
 
 
-subprocess.check_call(f"git config --global user.email {GITOPS_USERNAME}", shell=True)
-subprocess.check_call(f"git config --global user.name {GITOPS_USERMAIL}", shell=True)
+subprocess.check_output(f"git config --global user.email {GITOPS_USERNAME}", shell=True)
+subprocess.check_output(f"git config --global user.name {GITOPS_USERMAIL}", shell=True)
 git_env = os.environ.copy()
 git_env[
     "GIT_SSH_COMMAND"
@@ -61,14 +61,14 @@ async def helm(request: Request):
 
 def delete_workspace(dir: str):
     try:
-        subprocess.check_call(f"rm -rf {dir}", shell=True)
+        subprocess.check_output(f"rm -rf {dir}", shell=True)
     except Exception:
         logger.info(f"{dir} not found")
 
 
 def git_clone(repo: str, branch: str, dir: str):
     try:
-        subprocess.check_call(
+        subprocess.check_output(
             f"git clone --branch {branch} {repo} {dir}", shell=True, env=git_env
         )
     except Exception as ex:
@@ -78,7 +78,7 @@ def git_clone(repo: str, branch: str, dir: str):
 
 def yaml_replace(path: str, key: str, image_tag: str):
     try:
-        subprocess.check_call(
+        subprocess.check_output(
             f'sed -i "s/{key}:.*/{key}: \\"{image_tag}\\"/g" {path}', shell=True
         )
     except Exception as ex:
@@ -88,10 +88,11 @@ def yaml_replace(path: str, key: str, image_tag: str):
 
 def git_commit_n_push(path, message: str):
     try:
-        subprocess.check_call(
+        subprocess.check_output(
             f'git commit -a -m "{message}"', shell=True, cwd=path, env=git_env
         )
-        subprocess.check_call("git push", shell=True, cwd=path, env=git_env)
-    except Exception as ex:
-        logger.exception(ex)
+        subprocess.check_output("git push", shell=True, cwd=path, env=git_env)
+    except subprocess.CalledProcessError as ex:
+        if "nothing to commit" in ex.output.decode("utf-8"):
+            return
         raise HTTPException(status_code=500)

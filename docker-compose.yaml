@@ -6,8 +6,9 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    command: ["uvicorn", "main:app", "--host=0.0.0.0", "--reload"]
     ports:
       - 8000:8000
     volumes:
       - .:/app
-      - ./id_rsa:/root/.ssh/id_rsa
+      - ~/.ssh/id_rsa_cryptopie:/root/.ssh/id_rsa
